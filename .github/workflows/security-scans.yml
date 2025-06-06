@@ -24,9 +24,9 @@ jobs:
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=copilotorg -Dsonar.projectKey=copilotproj
 
   snyk-scan:
-    needs: sonar-scan
-    if: always()
     name: Snyk Security Scan
+    needs: [sonar-scan]
+    if: always() # Always run, even if SonarQube fails
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,9 +37,9 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   zap-scan:
-    needs: snyk-scan
-    if: always()
     name: OWASP ZAP Scan
+    needs: [snyk-scan]
+    if: always() # Always run, even if Snyk fails
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
